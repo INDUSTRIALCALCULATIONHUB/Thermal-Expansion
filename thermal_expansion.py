@@ -8,7 +8,23 @@ st.set_page_config(
 )
 
 # Initialize Session State
+if "material" not in st.session_state:
+    st.session_state.material = "Select Material"
+
+if "length" not in st.session_state:
+    st.session_state.length = ""
+
+if "delta_temp" not in st.session_state:
+    st.session_state.delta_temp = ""
+
 if "result" not in st.session_state:
+    st.session_state.result = None
+
+# Reset Function
+def reset_form():
+    st.session_state.material = "Select Material"
+    st.session_state.length = ""
+    st.session_state.delta_temp = ""
     st.session_state.result = None
 
 # Title
@@ -23,22 +39,23 @@ coefficients = {
     "Copper": 16.5e-6
 }
 
-# Input Fields
-material = st.selectbox(
+# Inputs
+st.selectbox(
     "Material",
-    ["Select Material"] + list(coefficients.keys())
+    ["Select Material"] + list(coefficients.keys()),
+    key="material"
 )
 
-length = st.text_input(
+st.text_input(
     "Length (mm)",
-    value="",
-    placeholder="Enter Length in mm"
+    placeholder="Enter Length in mm",
+    key="length"
 )
 
-delta_temp = st.text_input(
+st.text_input(
     "Temperature Difference (°C)",
-    value="",
-    placeholder="Enter Temperature Difference"
+    placeholder="Enter Temperature Difference",
+    key="delta_temp"
 )
 
 # Buttons
@@ -48,33 +65,35 @@ with col1:
     calculate = st.button("Calculate")
 
 with col2:
-    reset = st.button("Reset")
+    st.button("Reset", on_click=reset_form)
 
-# Reset Logic
-if reset:
-    st.session_state.clear()
-    st.rerun()
-
-# Calculate Logic
+# Calculate
 if calculate:
 
-    if material == "Select Material":
+    if st.session_state.material == "Select Material":
         st.error("Please select a material.")
 
-    elif length.strip() == "" or delta_temp.strip() == "":
+    elif (
+        st.session_state.length.strip() == ""
+        or st.session_state.delta_temp.strip() == ""
+    ):
         st.error("Please enter all required values.")
 
     else:
         try:
-            length_value = float(length)
-            delta_temp_value = float(delta_temp)
+            length_value = float(st.session_state.length)
+            delta_temp_value = float(st.session_state.delta_temp)
 
-            alpha = coefficients[material]
+            alpha = coefficients[st.session_state.material]
 
-            expansion = alpha * length_value * delta_temp_value
+            expansion = (
+                alpha
+                * length_value
+                * delta_temp_value
+            )
 
             st.session_state.result = {
-                "material": material,
+                "material": st.session_state.material,
                 "length": length_value,
                 "delta_temp": delta_temp_value,
                 "expansion": expansion
@@ -92,5 +111,11 @@ if st.session_state.result is not None:
 
     st.write(f"**Material:** {result['material']}")
     st.write(f"**Length:** {result['length']:.2f} mm")
-    st.write(f"**Temperature Difference:** {result['delta_temp']:.2f} °C")
-    st.write(f"**Thermal Expansion:** {result['expansion']:.2f} mm")
+    st.write(
+        f"**Temperature Difference:** "
+        f"{result['delta_temp']:.2f} °C"
+    )
+    st.write(
+        f"**Thermal Expansion:** "
+        f"{result['expansion']:.2f} mm"
+    )
