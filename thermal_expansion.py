@@ -10,8 +10,6 @@ st.set_page_config(
 # Title
 st.title("📏 Thermal Expansion Calculator")
 
-st.write("Calculate linear thermal expansion of various materials.")
-
 # Material Database
 coefficients = {
     "Steel": 11.2e-6,
@@ -21,38 +19,44 @@ coefficients = {
     "Copper": 16.5e-6
 }
 
-# Inputs
+# Material Selection
 material = st.selectbox(
-    "Select Material",
-    list(coefficients.keys())
+    "Material",
+    options=["Select Material"] + list(coefficients.keys()),
+    index=0
 )
 
-length = st.number_input(
-    "Original Length (mm)",
-    min_value=0.0,
-    value=5000.0,
-    step=100.0
+# Length Input
+length = st.text_input(
+    "Length (mm)",
+    placeholder="Enter Length in mm"
 )
 
-delta_temp = st.number_input(
+# Temperature Input
+delta_temp = st.text_input(
     "Temperature Difference (°C)",
-    min_value=0.0,
-    value=200.0,
-    step=10.0
+    placeholder="Enter Temperature Difference"
 )
 
-# Calculate Button
-if st.button("Calculate Expansion"):
+# Calculate Automatically
+if (
+    material != "Select Material"
+    and length.strip() != ""
+    and delta_temp.strip() != ""
+):
+    try:
+        length = float(length)
+        delta_temp = float(delta_temp)
 
-    alpha = coefficients[material]
+        alpha = coefficients[material]
+        expansion = alpha * length * delta_temp
 
-    expansion = alpha * length * delta_temp
+        st.subheader("Result")
 
-    st.success(f"Thermal Expansion = {expansion:.2f} mm")
+        st.write(f"**Material:** {material}")
+        st.write(f"**Length:** {length:,.2f} mm")
+        st.write(f"**Temperature Difference:** {delta_temp:,.2f} °C")
+        st.write(f"**Thermal Expansion:** {expansion:.2f} mm")
 
-    st.subheader("Calculation Summary")
-
-    st.write(f"**Material:** {material}")
-    st.write(f"**Original Length:** {length:,.2f} mm")
-    st.write(f"**Temperature Difference:** {delta_temp:,.2f} °C")
-    st.write(f"**Expansion:** {expansion:.2f} mm")
+    except ValueError:
+        st.error("Please enter valid numeric values.")
