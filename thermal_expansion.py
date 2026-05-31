@@ -37,22 +37,11 @@ coefficients = {
     "Carbon Steel (ASTM A106 Gr.B)": 11.7e-6,
     "Carbon Steel (Structural)": 11.2e-6,
     "Cast Iron (Grey)": 10.8e-6,
-    "Concrete": 12.0e-6,
     "Copper": 16.5e-6,
-    "Ductile Iron": 11.5e-6,
-    "FRP (Glass Fiber Reinforced Plastic)": 10.0e-6,
-    "Glass": 9.0e-6,
-    "HDPE": 120.0e-6,
     "Mild Steel": 12.0e-6,
-    "Nickel": 13.0e-6,
-    "PTFE (Teflon)": 120.0e-6,
-    "PVC": 52.0e-6,
-    "Reinforced Concrete": 11.0e-6,
-    "Rubber Lining": 80.0e-6,
     "Stainless Steel 304": 17.3e-6,
     "Stainless Steel 310": 14.4e-6,
-    "Stainless Steel 316": 16.0e-6,
-    "Titanium": 8.6e-6
+    "Stainless Steel 316": 16.0e-6
 }
 
 # Header
