@@ -53,7 +53,6 @@ if st.button("Calculate Expansion"):
     st.subheader("Calculation Summary")
 
     st.write(f"**Material:** {material}")
-    st.write(f"**Coefficient of Thermal Expansion:** {alpha:.6e} /°C")
     st.write(f"**Original Length:** {length:,.2f} mm")
     st.write(f"**Temperature Difference:** {delta_temp:,.2f} °C")
     st.write(f"**Expansion:** {expansion:.2f} mm")
