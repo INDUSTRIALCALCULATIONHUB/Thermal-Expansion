@@ -7,7 +7,6 @@ st.set_page_config(
     layout="centered"
 )
 
-# Title
 st.title("📏 Thermal Expansion Calculator")
 
 # Material Database
@@ -19,44 +18,87 @@ coefficients = {
     "Copper": 16.5e-6
 }
 
-# Material Selection
+# Initialize Session State
+if "material" not in st.session_state:
+    st.session_state.material = "Select Material"
+
+if "length" not in st.session_state:
+    st.session_state.length = ""
+
+if "delta_temp" not in st.session_state:
+    st.session_state.delta_temp = ""
+
+# Inputs
 material = st.selectbox(
     "Material",
     options=["Select Material"] + list(coefficients.keys()),
-    index=0
+    key="material"
 )
 
-# Length Input
 length = st.text_input(
     "Length (mm)",
-    placeholder="Enter Length in mm"
+    placeholder="Enter Length in mm",
+    key="length"
 )
 
-# Temperature Input
 delta_temp = st.text_input(
     "Temperature Difference (°C)",
-    placeholder="Enter Temperature Difference"
+    placeholder="Enter Temperature Difference",
+    key="delta_temp"
 )
 
-# Calculate Automatically
-if (
-    material != "Select Material"
-    and length.strip() != ""
-    and delta_temp.strip() != ""
-):
-    try:
-        length = float(length)
-        delta_temp = float(delta_temp)
+# Buttons
+col1, col2 = st.columns(2)
 
-        alpha = coefficients[material]
-        expansion = alpha * length * delta_temp
+with col1:
+    calculate = st.button("Calculate")
 
-        st.subheader("Result")
+with col2:
+    reset = st.button("Reset")
 
-        st.write(f"**Material:** {material}")
-        st.write(f"**Length:** {length:,.2f} mm")
-        st.write(f"**Temperature Difference:** {delta_temp:,.2f} °C")
-        st.write(f"**Thermal Expansion:** {expansion:.2f} mm")
+# Reset Logic
+if reset:
+    st.session_state.material = "Select Material"
+    st.session_state.length = ""
+    st.session_state.delta_temp = ""
+    st.rerun()
 
-    except ValueError:
-        st.error("Please enter valid numeric values.")
+# Calculate Logic
+if calculate:
+
+    if material == "Select Material":
+        st.error("Please select a material.")
+
+    elif length.strip() == "" or delta_temp.strip() == "":
+        st.error("Please enter all input values.")
+
+    else:
+        try:
+            length_value = float(length)
+            delta_temp_value = float(delta_temp)
+
+            alpha = coefficients[material]
+
+            expansion = (
+                alpha
+                * length_value
+                * delta_temp_value
+            )
+
+            st.subheader("Result")
+
+            st.write(f"**Material:** {material}")
+            st.write(f"**Length:** {length_value:,.2f} mm")
+            st.write(
+                f"**Temperature Difference:** "
+                f"{delta_temp_value:,.2f} °C"
+            )
+            st.write(
+                f"**Thermal Expansion:** "
+                f"{expansion:.2f} mm"
+            )
+
+        except ValueError:
+            st.error(
+                "Please enter valid numeric values."
+            )
